@@ -45,3 +45,37 @@ function addExpense() {
       document.getElementById("expenseResponse").innerText = JSON.stringify(data);
     });
 }
+
+// --- Add New Expense Handler ---
+document.getElementById('expense-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const expense = {
+    user: document.getElementById('user').value,
+    category: document.getElementById('category').value,
+    amount: document.getElementById('amount').value,
+    description: document.getElementById('description').value,
+    date: document.getElementById('date').value,
+  };
+
+  try {
+    const response = await fetch('/expenses', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(expense),
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      document.getElementById('expense-message').innerText = '✅ Expense added!';
+      document.getElementById('expense-form').reset();
+    } else {
+      document.getElementById('expense-message').innerText = result.error || '⚠️ Error adding expense.';
+    }
+  } catch (error) {
+    console.error(error);
+    document.getElementById('expense-message').innerText = '❌ Server error while adding expense.';
+  }
+});

@@ -17,6 +17,7 @@ app.use(express.json()); // parse incoming JSON
 app.use('/api/users', userRoutes);
 app.use('/api/budgets', budgetRoutes);
 app.use('/api/expenses', expenseRoutes);
+app.use('/expenses', expenseRoutes);
 
 // Start the server
 app.listen(PORT, () => {

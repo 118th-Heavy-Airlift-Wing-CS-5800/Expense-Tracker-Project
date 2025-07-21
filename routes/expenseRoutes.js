@@ -3,6 +3,30 @@ const fs = require('fs');
 const path = require('path');
 const router = express.Router();
 
+let expenses = []; // In-memory for now; you can later connect to a database
+
+// POST /expenses - Add a new expense
+router.post('/', (req, res) => {
+  const { user, category, amount, description, date } = req.body;
+
+  if (!user || !category || !amount || !date) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  const newExpense = {
+    id: Date.now(),
+    user,
+    category,
+    amount: parseFloat(amount),
+    description: description || '',
+    date,
+  };
+
+  expenses.push(newExpense);
+  res.status(201).json({ message: 'Expense added', expense: newExpense });
+});
+
+
 const BUDGET_FILE = path.join(__dirname, '../data/budgets.json');
 
 // Helper: Load budgets from file

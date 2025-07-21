@@ -30,6 +30,20 @@
   <button onclick="addExpense()">Add Expense</button>
   <p id="expenseResponse"></p>
 
+    <!-- Add New Expense -->
+  <h2>Add New Expense</h2>
+<form id="expense-form">
+  <input type="text" id="user" placeholder="User" required />
+  <input type="text" id="category" placeholder="Category" required />
+  <input type="number" id="amount" placeholder="Amount" required />
+  <input type="text" id="description" placeholder="Description" />
+  <input type="date" id="date" required />
+  <button type="submit">Add Expense</button>
+</form>
+
+<div id="expense-message"></div>
+
+
   <script src="script.js"></script>
 </body>
 </html>
