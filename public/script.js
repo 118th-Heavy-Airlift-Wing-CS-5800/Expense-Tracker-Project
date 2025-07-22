@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   const expenseForm = document.getElementById('expenseForm');
   const expenseOutput = document.getElementById('expenseOutput');
+  const totalBtn = document.getElementById('viewTotalBtn');
+  const totalOutput = document.getElementById('totalOutput');
 
-  // Fetch and display existing expenses on load
+  // Load existing expenses on page load
   fetch('/expenses')
     .then((res) => res.json())
     .then((data) => {
@@ -17,9 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
       expenseOutput.innerText = 'Error loading expenses.';
     });
 
-  // Handle form submission
+  // Handle form submission (prevent page refresh!)
   expenseForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+    e.preventDefault(); // prevents page reload
 
     const user = document.getElementById('user').value.trim();
     const category = document.getElementById('category').value.trim();
@@ -32,20 +34,15 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-const expense = { user, category, amount, description, date };
-
+    const expense = { user, category, amount, description, date };
 
     fetch('/expenses', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(expense),
     })
       .then((res) => {
-        if (!res.ok) {
-          throw new Error('Failed to add expense.');
-        }
+        if (!res.ok) throw new Error('Failed to add expense');
         return res.json();
       })
       .then((newExpense) => {
@@ -58,31 +55,27 @@ const expense = { user, category, amount, description, date };
       });
   });
 
-  // Display expenses on the page
+  // Display expenses
   function displayExpenses(expenses, append = false) {
-    if (!append) {
-      expenseOutput.innerHTML = '';
-    }
+    if (!append) expenseOutput.innerHTML = '';
 
     expenses.forEach((expense) => {
       const div = document.createElement('div');
-      div.textContent = `Category: ${expense.category}, Amount: ${expense.amount}`;
+      div.textContent = `Category: ${expense.category}, Amount: $${expense.amount}`;
       expenseOutput.appendChild(div);
     });
   }
-  const totalBtn = document.getElementById('viewTotalBtn');
-const totalOutput = document.getElementById('totalOutput');
 
-totalBtn.addEventListener('click', () => {
-  fetch('/expenses/total')
-    .then(res => res.json())
-    .then(data => {
-      totalOutput.innerText = `Total Expenses: $${data.total.toFixed(2)}`;
-    })
-    .catch(err => {
-      console.error('Error fetching total:', err);
-      totalOutput.innerText = 'Error retrieving total.';
-    });
-});
-
+  // Show total expenses
+  totalBtn.addEventListener('click', () => {
+    fetch('/expenses/total')
+      .then((res) => res.json())
+      .then((data) => {
+        totalOutput.innerText = `Total Expenses: $${data.total.toFixed(2)}`;
+      })
+      .catch((err) => {
+        console.error('Error fetching total:', err);
+        totalOutput.innerText = 'Error retrieving total.';
+      });
+  });
 });
