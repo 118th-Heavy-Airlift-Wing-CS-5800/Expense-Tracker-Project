@@ -6,42 +6,19 @@
   <title>Expense Tracker (Minimal Frontend)</title>
 </head>
 <body>
-  <h1>Expense Tracker API Test</h1>
+  
+  <h1>Simple Expense Tracker</h1>
 
-  <!-- User Creation -->
-  <h2>Create User</h2>
-  <input type="text" id="username" placeholder="Username" />
-  <input type="text" id="email" placeholder="Email" />
-  <button onclick="createUser()">Create User</button>
-  <p id="userResponse"></p>
+  <form id="expenseForm">
+    <label>Category: <input type="text" id="category" required></label>
+    <label>Amount: <input type="number" id="amount" required></label>
+    <button type="submit">Add Expense</button>
+  </form>
 
-  <!-- Add Budget -->
-  <h2>Add Budget</h2>
-  <input type="text" id="budget-user" placeholder="Username" />
-  <input type="number" id="budget-amount" placeholder="Amount" />
-  <button onclick="addBudget()">Add Budget</button>
-  <p id="budgetResponse"></p>
-
-
-
-    <!-- Add New Expense -->
-  <h2>Add New Expense</h2>
-<form id="expense-form">
-  <input type="text" id="user" placeholder="User" required />
-  <input type="text" id="category" placeholder="Category" required />
-  <input type="number" id="amount" placeholder="Amount" required />
-  <input type="text" id="description" placeholder="Description" />
-  <input type="date" id="date" required />
-  <button type="submit">Add Expense</button>
-</form>
-
-<button id="viewTotalBtn">View Total Expenses</button>
-<div id="expenseOutput"></div>
-<div id="totalOutput"></div>
-
-<div id="expense-message"></div>
-
+  <h2>All Expenses</h2>
+  <ul id="expenseList"></ul>
 
   <script src="script.js"></script>
+
 </body>
 </html>

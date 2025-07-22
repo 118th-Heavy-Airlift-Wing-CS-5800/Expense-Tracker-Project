@@ -3,62 +3,45 @@ const fs = require('fs');
 const path = require('path');
 const router = express.Router();
 
-const BUDGET_FILE = path.join(__dirname, '../data/budgets.json');
+const DATA_FILE = path.join(__dirname, '../data/expenses.json');
 
-// Helper: Load budgets from file
-function loadBudgets() {
-  if (!fs.existsSync(BUDGET_FILE)) return [];
-  const data = fs.readFileSync(BUDGET_FILE, 'utf-8');
+// Load or initialize data
+function loadExpenses() {
+  if (!fs.existsSync(DATA_FILE)) return [];
+  const data = fs.readFileSync(DATA_FILE, 'utf-8');
   return JSON.parse(data);
 }
 
-// Helper: Save budgets to file
-function saveBudgets(budgets) {
-  fs.writeFileSync(BUDGET_FILE, JSON.stringify(budgets, null, 2));
+function saveExpenses(expenses) {
+  fs.writeFileSync(DATA_FILE, JSON.stringify(expenses, null, 2));
 }
 
-// POST /api/expenses — Add an expense to a budget
-router.post('/', (req, res) => {
-  const { user, category, amount, description, date } = req.body;
+// GET /api/expenses - list all
+router.get('/', (req, res) => {
+  const expenses = loadExpenses();
+  res.json(expenses);
+});
 
-  if (!user || !category || !amount || !date) {
-    return res.status(400).json({ message: 'Missing required fields.' });
+// POST /api/expenses - add new
+router.post('/', (req, res) => {
+  const { category, amount } = req.body;
+
+  if (!category || !amount) {
+    return res.status(400).json({ message: 'Category and amount are required.' });
   }
 
+  const expenses = loadExpenses();
+
   const newExpense = {
-    user,
+    id: Date.now(),
     category,
-    amount,
-    description: description || '',
-    date,
+    amount: parseFloat(amount)
   };
 
   expenses.push(newExpense);
-  res.status(201).json(newExpense);
-});
+  saveExpenses(expenses);
 
-
-// GET /api/expenses/:budgetId — Get all expenses for a budget
-router.get('/:budgetId', (req, res) => {
-  const budgetId = parseInt(req.params.budgetId);
-  const budgets = loadBudgets();
-  const budget = budgets.find(b => b.id === budgetId);
-
-  if (!budget) {
-    return res.status(404).json({ message: 'Budget not found.' });
-  }
-
-  res.json(budget.expenses);
-  // GET /expenses/total - Get total amount of all expenses
-router.get('/total', (req, res) => {
-  try {
-    const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-    res.json({ total });
-  } catch (err) {
-    res.status(500).json({ message: 'Error calculating total expenses.' });
-  }
-});
-
+  res.status(201).json({ message: 'Expense added.', expense: newExpense });
 });
 
 module.exports = router;
