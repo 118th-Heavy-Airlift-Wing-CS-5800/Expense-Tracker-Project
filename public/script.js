@@ -66,4 +66,19 @@ document.addEventListener('DOMContentLoaded', () => {
       expenseOutput.appendChild(div);
     });
   }
+  const totalBtn = document.getElementById('viewTotalBtn');
+const totalOutput = document.getElementById('totalOutput');
+
+totalBtn.addEventListener('click', () => {
+  fetch('/expenses/total')
+    .then(res => res.json())
+    .then(data => {
+      totalOutput.innerText = `Total Expenses: $${data.total.toFixed(2)}`;
+    })
+    .catch(err => {
+      console.error('Error fetching total:', err);
+      totalOutput.innerText = 'Error retrieving total.';
+    });
+});
+
 });

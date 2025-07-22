@@ -56,6 +56,16 @@ router.get('/:budgetId', (req, res) => {
   }
 
   res.json(budget.expenses);
+  // GET /expenses/total - Get total amount of all expenses
+router.get('/total', (req, res) => {
+  try {
+    const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+    res.json({ total });
+  } catch (err) {
+    res.status(500).json({ message: 'Error calculating total expenses.' });
+  }
+});
+
 });
 
 module.exports = router;
