@@ -1,81 +1,69 @@
-const baseUrl = "https://expense-tracker-cs-5800.onrender.com"; // Replace with your Render URL
+document.addEventListener('DOMContentLoaded', () => {
+  const expenseForm = document.getElementById('expenseForm');
+  const expenseOutput = document.getElementById('expenseOutput');
 
-function createUser() {
-  const username = document.getElementById("username").value;
-  const email = document.getElementById("email").value;
-
-  fetch(`${baseUrl}/users`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, email }),
-  })
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("userResponse").innerText = JSON.stringify(data);
+  // Fetch and display existing expenses on load
+  fetch('/expenses')
+    .then((res) => res.json())
+    .then((data) => {
+      if (Array.isArray(data)) {
+        displayExpenses(data);
+      } else {
+        expenseOutput.innerText = 'No expenses found.';
+      }
+    })
+    .catch((err) => {
+      console.error('Error fetching expenses:', err);
+      expenseOutput.innerText = 'Error loading expenses.';
     });
-}
 
-function addBudget() {
-  const username = document.getElementById("budget-user").value;
-  const amount = document.getElementById("budget-amount").value;
+  // Handle form submission
+  expenseForm.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-  fetch(`${baseUrl}/budgets`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, amount: parseFloat(amount) }),
-  })
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("budgetResponse").innerText = JSON.stringify(data);
-    });
-}
+    const category = document.getElementById('category').value.trim();
+    const amount = parseFloat(document.getElementById('amount').value);
 
-function addExpense() {
-  const username = document.getElementById("expense-user").value;
-  const name = document.getElementById("expense-name").value;
-  const amount = document.getElementById("expense-amount").value;
+    if (!category || isNaN(amount)) {
+      alert('Please enter valid category and amount.');
+      return;
+    }
 
-  fetch(`${baseUrl}/expenses`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, name, amount: parseFloat(amount) }),
-  })
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("expenseResponse").innerText = JSON.stringify(data);
-    });
-}
+    const expense = { category, amount };
 
-// --- Add New Expense Handler ---
-document.getElementById('expense-form').addEventListener('submit', async function (e) {
-  e.preventDefault();
-
-  const expense = {
-    user: document.getElementById('user').value,
-    category: document.getElementById('category').value,
-    amount: document.getElementById('amount').value,
-    description: document.getElementById('description').value,
-    date: document.getElementById('date').value,
-  };
-
-  try {
-    const response = await fetch('/expenses', {
+    fetch('/expenses', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(expense),
-    });
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Failed to add expense.');
+        }
+        return res.json();
+      })
+      .then((newExpense) => {
+        displayExpenses([newExpense], true);
+        expenseForm.reset();
+      })
+      .catch((err) => {
+        console.error('Error adding expense:', err);
+        alert('Error adding expense.');
+      });
+  });
 
-    const result = await response.json();
-    if (response.ok) {
-      document.getElementById('expense-message').innerText = '✅ Expense added!';
-      document.getElementById('expense-form').reset();
-    } else {
-      document.getElementById('expense-message').innerText = result.error || '⚠️ Error adding expense.';
+  // Display expenses on the page
+  function displayExpenses(expenses, append = false) {
+    if (!append) {
+      expenseOutput.innerHTML = '';
     }
-  } catch (error) {
-    console.error(error);
-    document.getElementById('expense-message').innerText = '❌ Server error while adding expense.';
+
+    expenses.forEach((expense) => {
+      const div = document.createElement('div');
+      div.textContent = `Category: ${expense.category}, Amount: ${expense.amount}`;
+      expenseOutput.appendChild(div);
+    });
   }
 });
