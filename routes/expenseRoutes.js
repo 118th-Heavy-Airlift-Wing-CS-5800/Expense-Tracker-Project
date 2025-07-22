@@ -19,31 +19,24 @@ function saveBudgets(budgets) {
 
 // POST /api/expenses — Add an expense to a budget
 router.post('/', (req, res) => {
-  const { budgetId, name, amount, category } = req.body;
+  const { user, category, amount, description, date } = req.body;
 
-  if (!budgetId || !name || amount == null || !category) {
-    return res.status(400).json({ message: 'budgetId, name, amount, and category are required.' });
-  }
-
-  const budgets = loadBudgets();
-  const budget = budgets.find(b => b.id === parseInt(budgetId));
-
-  if (!budget) {
-    return res.status(404).json({ message: 'Budget not found.' });
+  if (!user || !category || !amount || !date) {
+    return res.status(400).json({ message: 'Missing required fields.' });
   }
 
   const newExpense = {
-    id: Date.now(),
-    name,
-    amount: parseFloat(amount),
-    category
+    user,
+    category,
+    amount,
+    description: description || '',
+    date,
   };
 
-  budget.expenses.push(newExpense);
-  saveBudgets(budgets);
-
-  res.status(201).json({ message: 'Expense added successfully.', expense: newExpense });
+  expenses.push(newExpense);
+  res.status(201).json(newExpense);
 });
+
 
 // GET /api/expenses/:budgetId — Get all expenses for a budget
 router.get('/:budgetId', (req, res) => {

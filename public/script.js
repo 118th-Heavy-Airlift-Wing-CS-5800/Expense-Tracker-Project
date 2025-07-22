@@ -21,15 +21,19 @@ document.addEventListener('DOMContentLoaded', () => {
   expenseForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
+    const user = document.getElementById('user').value.trim();
     const category = document.getElementById('category').value.trim();
     const amount = parseFloat(document.getElementById('amount').value);
+    const description = document.getElementById('description').value.trim();
+    const date = document.getElementById('date').value;
 
-    if (!category || isNaN(amount)) {
-      alert('Please enter valid category and amount.');
+    if (!user || !category || isNaN(amount) || !date) {
+      alert('Please enter all required fields.');
       return;
     }
 
-    const expense = { category, amount };
+const expense = { user, category, amount, description, date };
+
 
     fetch('/expenses', {
       method: 'POST',
