@@ -101,39 +101,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-document.getElementById("checkBalanceBtn").addEventListener("click", () => {
-  const username = document.getElementById("balanceUsername").value;
+document.getElementById('checkBalanceBtn').addEventListener('click', async () => {
+  const username = document.getElementById('balanceUsername').value;
 
-  if (!username) {
-    alert("Please enter a username.");
-    return;
+  try {
+    const [budgetRes, expenseRes] = await Promise.all([
+      fetch(`/api/budgets`),
+      fetch(`/api/expenses/${username}/total`)
+    ]);
+
+    const budgets = await budgetRes.json();
+    const { total } = await expenseRes.json();
+
+    const userBudget = budgets.find(b => b.username === username);
+
+    if (!userBudget) {
+      document.getElementById('balanceOutput').textContent = 'Budget not found for this user.';
+      return;
+    }
+
+    const remaining = userBudget.income - total;
+    document.getElementById('balanceOutput').textContent =
+      `User: ${username} | Budget: $${userBudget.income} | Expenses: $${total} | Remaining: $${remaining}`;
+  } catch (err) {
+    console.error('Error checking balance:', err);
+    document.getElementById('balanceOutput').textContent = 'Error checking balance.';
   }
-
-  Promise.all([
-    fetch("https://expense-tracker-project-mo0q.onrender.com/api/budgets").then(res => res.json()),
-    fetch("https://expense-tracker-project-mo0q.onrender.com/api/expenses").then(res => res.json())
-  ])
-    .then(([budgets, expenses]) => {
-      const userBudget = budgets.find(b => b.username === username);
-      const userExpenses = expenses.filter(e => e.username === username);
-
-      if (!userBudget) {
-        document.getElementById("balanceOutput").innerText = "No budget found for this user.";
-        return;
-      }
-
-      const totalExpenses = userExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
-      const balance = userBudget.income - totalExpenses;
-
-      document.getElementById("balanceOutput").innerText = 
-        `Budget: $${userBudget.income}\n` +
-        `Total Expenses: $${totalExpenses}\n` +
-        `Remaining Balance: $${balance}`;
-    })
-    .catch(err => {
-      console.error("Error retrieving balance:", err);
-      document.getElementById("balanceOutput").innerText = "Error retrieving balance.";
-    });
 });
+
 
 });

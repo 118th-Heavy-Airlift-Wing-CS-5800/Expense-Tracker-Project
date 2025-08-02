@@ -44,4 +44,14 @@ router.post('/', (req, res) => {
   res.status(201).json({ message: 'Expense added.', expense: newExpense });
 });
 
+router.get('/:username/total', (req, res) => {
+  const { username } = req.params;
+  const expenses = loadExpenses();
+  const userExpenses = expenses.filter(exp => exp.username === username);
+  const total = userExpenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
+
+  res.json({ username, total });
+});
+
+
 module.exports = router;
