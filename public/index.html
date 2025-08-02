@@ -14,6 +14,14 @@
     <button type="submit">Add Expense</button>
   </form>
 
+  <h2>Set Budget</h2>
+    <input type="number" id="budgetAmount" placeholder="Enter your budget">
+    <button onclick="setBudget()">Set Budget</button>
+
+    <h3 id="budgetDisplay">Budget: $0.00</h3>
+    <h3 id="balanceDisplay">Remaining Balance: $0.00</h3>
+
+
   <button id="clearExpensesBtn">Clear All Expenses</button>
 
   <hr>
@@ -50,10 +58,35 @@
       total += amount;
       document.getElementById("totalExpenses").textContent = `Total Expenses: $${total.toFixed(2)}`;
 
+      updateBalance(); // <--- update balance after adding expense
+
       // Clear input fields
       categoryInput.value = "";
       amountInput.value = "";
     }
+
+
+function setBudget() {
+  const budgetInput = document.getElementById("budgetAmount");
+  const value = parseFloat(budgetInput.value);
+
+  if (isNaN(value) || value < 0) {
+    alert("Please enter a valid budget amount.");
+    return;
+  }
+
+  budget = value;
+  document.getElementById("budgetDisplay").textContent = `Budget: $${budget.toFixed(2)}`;
+  updateBalance();
+
+  budgetInput.value = "";
+}
+
+function updateBalance() {
+  const balance = budget - total;
+  document.getElementById("balanceDisplay").textContent = `Remaining Balance: $${balance.toFixed(2)}`;
+}
+
   </script>
   
   <h2>Set Budget</h2>
