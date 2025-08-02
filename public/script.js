@@ -73,6 +73,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  document.getElementById('clearExpensesBtn').addEventListener('click', async () => {
+  try {
+    const response = await fetch(`${backendURL}/expenses/clear`, {
+      method: 'DELETE',
+    });
+
+    const result = await response.json();
+    alert(result.message);
+
+    // Optionally clear the displayed output too
+    document.getElementById('expenseOutput').innerHTML = '';
+  } catch (err) {
+    alert('Error clearing expenses');
+  }
+});
+
+
   // Initial load
   loadExpenses();
 

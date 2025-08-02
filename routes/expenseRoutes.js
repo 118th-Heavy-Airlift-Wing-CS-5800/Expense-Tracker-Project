@@ -53,5 +53,15 @@ router.get('/:username/total', (req, res) => {
   res.json({ username, total });
 });
 
+// Clear all expenses
+router.delete('/clear', (req, res) => {
+  try {
+    expenses = []; // Clear the in-memory expense array
+    res.status(200).json({ message: 'All expenses cleared successfully.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error clearing expenses.' });
+  }
+});
+
 
 module.exports = router;
