@@ -51,12 +51,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const username = document.getElementById('usernameInput').value.trim();
     const email = document.getElementById('emailInput').value.trim();
+    const password = document.getElementById('passwordInput').value.trim();
 
     try {
       const response = await fetch(USER_API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email })
+        body: JSON.stringify({ username, email, password })
+
       });
 
       const data = await response.json();

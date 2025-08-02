@@ -25,11 +25,11 @@ router.get('/', (req, res) => {
 
 // POST /api/users — Create a new user
 router.post('/', (req, res) => {
-  const { username, email } = req.body;
+  const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: 'Username, email, and password are required.' });
+}
 
-  if (!username || !email) {
-    return res.status(400).json({ message: 'Username and email are required.' });
-  }
 
   const users = loadUsers();
 
