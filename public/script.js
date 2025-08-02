@@ -75,4 +75,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial load
   loadExpenses();
+
+  document.getElementById("setBudgetBtn").addEventListener("click", () => {
+  const username = document.getElementById("budgetUsername").value;
+  const budgetName = document.getElementById("budgetName").value;
+  const income = parseFloat(document.getElementById("budgetAmount").value);
+
+  if (!username || !budgetName || isNaN(income)) {
+    alert("Please enter all budget fields.");
+    return;
+  }
+
+  fetch("https://expense-tracker-project-mo0q.onrender.com/api/budgets", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, budgetName, income })
+  })
+    .then(res => res.json())
+    .then(data => {
+      alert("Budget set successfully.");
+    })
+    .catch(err => {
+      console.error("Error setting budget:", err);
+      alert("Error setting budget.");
+    });
+});
+
+document.getElementById("checkBalanceBtn").addEventListener("click", () => {
+  const username = document.getElementById("balanceUsername").value;
+
+  if (!username) {
+    alert("Please enter a username.");
+    return;
+  }
+
+  Promise.all([
+    fetch("https://expense-tracker-project-mo0q.onrender.com/api/budgets").then(res => res.json()),
+    fetch("https://expense-tracker-project-mo0q.onrender.com/api/expenses").then(res => res.json())
+  ])
+    .then(([budgets, expenses]) => {
+      const userBudget = budgets.find(b => b.username === username);
+      const userExpenses = expenses.filter(e => e.username === username);
+
+      if (!userBudget) {
+        document.getElementById("balanceOutput").innerText = "No budget found for this user.";
+        return;
+      }
+
+      const totalExpenses = userExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
+      const balance = userBudget.income - totalExpenses;
+
+      document.getElementById("balanceOutput").innerText = 
+        `Budget: $${userBudget.income}\n` +
+        `Total Expenses: $${totalExpenses}\n` +
+        `Remaining Balance: $${balance}`;
+    })
+    .catch(err => {
+      console.error("Error retrieving balance:", err);
+      document.getElementById("balanceOutput").innerText = "Error retrieving balance.";
+    });
+});
+
 });
