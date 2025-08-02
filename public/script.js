@@ -146,5 +146,12 @@ document.getElementById('checkBalanceBtn').addEventListener('click', async () =>
   }
 });
 
+// Clear HTML expense list (frontend only)
+document.getElementById('clearExpensesBtn').addEventListener('click', () => {
+  const expenseList = document.getElementById('expenseList');
+  expenseList.innerHTML = ''; // Clears the visual list
+});
+
+
 
 });
