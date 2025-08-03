@@ -37,57 +37,73 @@
   <h3 id="totalExpenses">Total Expenses: $0.00</h3>
 
   <script>
-    let total = 0;
+  let total = 0;
+  let budget = 0;
 
-    function addExpense() {
-      const categoryInput = document.getElementById("expenseCategory");
-      const amountInput = document.getElementById("expenseAmount");
+  function addExpense() {
+    const categoryInput = document.getElementById("expenseCategory");
+    const amountInput = document.getElementById("expenseAmount");
 
-      const category = categoryInput.value.trim();
-      const amount = parseFloat(amountInput.value);
+    const category = categoryInput.value.trim();
+    const amount = parseFloat(amountInput.value);
 
-      if (category === "" || isNaN(amount)) {
-        alert("Please enter a valid category and amount.");
-        return;
-      }
-
-      const li = document.createElement("li");
-      li.textContent = `Category: ${category}, Amount: $${amount.toFixed(2)}`;
-      document.getElementById("expenseList").appendChild(li);
-
-      total += amount;
-      document.getElementById("totalExpenses").textContent = `Total Expenses: $${total.toFixed(2)}`;
-
-      updateBalance(); // <--- update balance after adding expense
-
-      // Clear input fields
-      categoryInput.value = "";
-      amountInput.value = "";
+    if (category === "" || isNaN(amount)) {
+      alert("Please enter a valid category and amount.");
+      return;
     }
 
+    const li = document.createElement("li");
+    li.textContent = `Category: ${category}, Amount: $${amount.toFixed(2)} `;
 
-function setBudget() {
-  const budgetInput = document.getElementById("budgetAmount");
-  const value = parseFloat(budgetInput.value);
+    // Create delete button
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.style.marginLeft = "10px";
+    deleteBtn.onclick = function () {
+      li.remove();
+      total -= amount;
+      updateTotal();
+      updateBalance();
+    };
 
-  if (isNaN(value) || value < 0) {
-    alert("Please enter a valid budget amount.");
-    return;
+    li.appendChild(deleteBtn);
+    document.getElementById("expenseList").appendChild(li);
+
+    total += amount;
+    updateTotal();
+    updateBalance();
+
+    // Clear input fields
+    categoryInput.value = "";
+    amountInput.value = "";
   }
 
-  budget = value;
-  document.getElementById("budgetDisplay").textContent = `Budget: $${budget.toFixed(2)}`;
-  updateBalance();
+  function updateTotal() {
+    document.getElementById("totalExpenses").textContent = `Total Expenses: $${total.toFixed(2)}`;
+  }
 
-  budgetInput.value = "";
-}
+  function setBudget() {
+    const budgetInput = document.getElementById("budgetAmount");
+    const value = parseFloat(budgetInput.value);
 
-function updateBalance() {
-  const balance = budget - total;
-  document.getElementById("balanceDisplay").textContent = `Remaining Balance: $${balance.toFixed(2)}`;
-}
+    if (isNaN(value) || value < 0) {
+      alert("Please enter a valid budget amount.");
+      return;
+    }
 
-  </script>
+    budget = value;
+    document.getElementById("budgetDisplay").textContent = `Budget: $${budget.toFixed(2)}`;
+    updateBalance();
+
+    budgetInput.value = "";
+  }
+
+  function updateBalance() {
+    const balance = budget - total;
+    document.getElementById("balanceDisplay").textContent = `Remaining Balance: $${balance.toFixed(2)}`;
+  }
+</script>
+
   
   <h2>Set Budget</h2>
     <input type="text" id="budgetUsername" placeholder="Username">
@@ -116,7 +132,6 @@ function updateBalance() {
   <hr>
 
   <h2>All Expenses</h2>
-  <ul id="expenseList"></ul>
 
   <script src="script.js"></script>
 </body>
