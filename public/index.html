@@ -3,28 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Expense Tracker (Minimal Frontend)</title>
+  <title>Expense Tracker</title>
 </head>
 <body>
   <h1>Simple Expense Tracker</h1>
-  
-  <form id="expenseForm">
-    <label>Category: <input type="text" id="category" required></label>
-    <label>Amount: <input type="number" id="amount" required></label>
-    <button type="submit">Add Expense</button>
-  </form>
 
   <h2>Set Budget</h2>
-    <input type="number" id="budgetAmount" placeholder="Enter your budget">
-    <button onclick="setBudget()">Set Budget</button>
+  <input type="number" id="budgetAmount" placeholder="Enter your budget">
+  <button onclick="setBudget()">Set Budget</button>
 
-    <h3 id="budgetDisplay">Budget: $0.00</h3>
-    <h3 id="balanceDisplay">Remaining Balance: $0.00</h3>
-
-
-  <button id="clearExpensesBtn">Clear All Expenses</button>
-
-  <hr>
+  <h3 id="budgetDisplay">Budget: $0.00</h3>
+  <h3 id="balanceDisplay">Remaining Balance: $0.00</h3>
 
   <h2>Add Expense</h2>
   <input type="text" id="expenseCategory" placeholder="Category">
@@ -37,103 +26,86 @@
   <h3 id="totalExpenses">Total Expenses: $0.00</h3>
 
   <script>
-  let total = 0;
-  let budget = 0;
+    let total = 0;
+    let budget = 0;
 
-  function addExpense() {
-    const categoryInput = document.getElementById("expenseCategory");
-    const amountInput = document.getElementById("expenseAmount");
+    function addExpense() {
+      const categoryInput = document.getElementById("expenseCategory");
+      const amountInput = document.getElementById("expenseAmount");
 
-    const category = categoryInput.value.trim();
-    const amount = parseFloat(amountInput.value);
+      const category = categoryInput.value.trim();
+      const amount = parseFloat(amountInput.value);
 
-    if (category === "" || isNaN(amount)) {
-      alert("Please enter a valid category and amount.");
-      return;
-    }
+      if (category === "" || isNaN(amount)) {
+        alert("Please enter a valid category and amount.");
+        return;
+      }
 
-    const li = document.createElement("li");
-    li.textContent = `Category: ${category}, Amount: $${amount.toFixed(2)} `;
+      const li = document.createElement("li");
+      li.textContent = `Category: ${category}, Amount: $${amount.toFixed(2)} `;
 
-    // Create delete button
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Delete";
-    deleteBtn.style.marginLeft = "10px";
-    deleteBtn.onclick = function () {
-      li.remove();
-      total -= amount;
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "Delete";
+      deleteBtn.style.marginLeft = "10px";
+      deleteBtn.onclick = function () {
+        li.remove();
+        total -= amount;
+        updateTotal();
+        updateBalance();
+        highlightIfOverspending();
+      };
+
+      li.appendChild(deleteBtn);
+      document.getElementById("expenseList").appendChild(li);
+
+      total += amount;
       updateTotal();
       updateBalance();
-    };
+      highlightIfOverspending();
 
-    li.appendChild(deleteBtn);
-    document.getElementById("expenseList").appendChild(li);
-
-    total += amount;
-    updateTotal();
-    updateBalance();
-
-    // Clear input fields
-    categoryInput.value = "";
-    amountInput.value = "";
-  }
-
-  function updateTotal() {
-    document.getElementById("totalExpenses").textContent = `Total Expenses: $${total.toFixed(2)}`;
-  }
-
-  function setBudget() {
-    const budgetInput = document.getElementById("budgetAmount");
-    const value = parseFloat(budgetInput.value);
-
-    if (isNaN(value) || value < 0) {
-      alert("Please enter a valid budget amount.");
-      return;
+      categoryInput.value = "";
+      amountInput.value = "";
     }
 
-    budget = value;
-    document.getElementById("budgetDisplay").textContent = `Budget: $${budget.toFixed(2)}`;
-    updateBalance();
+    function setBudget() {
+      const budgetInput = document.getElementById("budgetAmount");
+      const value = parseFloat(budgetInput.value);
 
-    budgetInput.value = "";
-  }
+      if (isNaN(value) || value < 0) {
+        alert("Please enter a valid budget amount.");
+        return;
+      }
 
-  function updateBalance() {
-    const balance = budget - total;
-    document.getElementById("balanceDisplay").textContent = `Remaining Balance: $${balance.toFixed(2)}`;
-  }
-</script>
+      budget = value;
+      document.getElementById("budgetDisplay").textContent = `Budget: $${budget.toFixed(2)}`;
+      updateBalance();
+      highlightIfOverspending();
 
-  
-  <h2>Set Budget</h2>
-    <input type="text" id="budgetUsername" placeholder="Username">
-    <input type="text" id="budgetName" placeholder="Budget Name">
-    <input type="number" id="budgetAmount" placeholder="Budget Amount">
-    <button id="setBudgetBtn">Set Budget</button>
+      budgetInput.value = "";
+    }
 
-  <hr>
-  <h2>Check Balance</h2>
-    <input type="text" id="balanceUsername" placeholder="Enter Username" />
-    <button id="checkBalanceBtn">Check Balance</button>
-    <p id="balanceOutput"></p>
+    function updateTotal() {
+      document.getElementById("totalExpenses").textContent = `Total Expenses: $${total.toFixed(2)}`;
+    }
 
+    function updateBalance() {
+      const balance = budget - total;
+      document.getElementById("balanceDisplay").textContent = `Remaining Balance: $${balance.toFixed(2)}`;
+    }
 
+    function highlightIfOverspending() {
+      const totalElem = document.getElementById("totalExpenses");
+      const balanceElem = document.getElementById("balanceDisplay");
 
-  <h2>Create User</h2>
-  <form id="userForm">
-    <label>Username: <input type="text" id="usernameInput" required></label><br>
-    <label>Email: <input type="email" id="emailInput" required></label><br>
-    <label>Password: <input type="password" id="passwordInput" required></label><br>
-    <button type="submit">Create User</button>
-  </form>
-
-
-  <div id="userOutput"></div>
-  <hr>
-
-  <h2>All Expenses</h2>
-
-  <script src="script.js"></script>
+      if (total > budget) {
+        totalElem.style.color = "red";
+        balanceElem.style.color = "red";
+        balanceElem.textContent += " ⚠ Over Budget!";
+      } else {
+        totalElem.style.color = "black";
+        balanceElem.style.color = "black";
+      }
+    }
+  </script>
 </body>
-
 </html>
