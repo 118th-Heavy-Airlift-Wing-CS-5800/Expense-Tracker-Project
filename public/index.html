@@ -24,6 +24,8 @@
 
 
   <button id="clearExpensesBtn">Clear All Expenses</button>
+  <button onclick="resetAll()">Reset All</button>
+
 
   <hr>
 
@@ -145,6 +147,31 @@
         }
       }
     });
+  }
+  function resetAll() {
+    // Clear expense list
+    document.getElementById("expenseList").innerHTML = "";
+
+    // Reset variables
+    expenseData = {};
+    total = 0;
+    budget = 0;
+
+    // Clear chart
+    if (chart) {
+      chart.destroy();
+      chart = null;
+    }
+
+    // Reset display fields
+    document.getElementById("totalExpenses").textContent = "Total Expenses: $0.00";
+    document.getElementById("budgetDisplay").textContent = "Budget: $0.00";
+    document.getElementById("balanceDisplay").textContent = "Remaining Balance: $0.00";
+
+    // Clear input fields
+    document.getElementById("expenseCategory").value = "";
+    document.getElementById("expenseAmount").value = "";
+    document.getElementById("budgetAmount").value = "";
   }
 </script>
 
