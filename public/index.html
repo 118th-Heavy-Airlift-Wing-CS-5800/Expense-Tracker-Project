@@ -82,7 +82,14 @@
 <body>
   <h1>Expense Tracker</h1>
   
-
+    <h2>Create User</h2>
+  <form id="userForm">
+    <label>Username: <input type="text" id="usernameInput" required></label><br>
+    <label>Email: <input type="email" id="emailInput" required></label><br>
+    <label>Password: <input type="password" id="passwordInput" required></label><br>
+    <button type="submit">Create User</button>
+  </form>
+  
   <h2>Set Budget</h2>
     <input type="number" id="budgetAmount" placeholder="Enter your budget">
     <button onclick="setBudget()">Set Budget</button>
@@ -244,20 +251,11 @@
 </script>
 
 
-  <h2>Create User</h2>
-  <form id="userForm">
-    <label>Username: <input type="text" id="usernameInput" required></label><br>
-    <label>Email: <input type="email" id="emailInput" required></label><br>
-    <label>Password: <input type="password" id="passwordInput" required></label><br>
-    <button type="submit">Create User</button>
-  </form>
+
   
 
   <hr>
-  <h2>Check Balance</h2>
-    <input type="text" id="balanceUsername" placeholder="Enter Username" />
-    <button id="checkBalanceBtn">Check Balance</button>
-    <p id="balanceOutput"></p>
+ 
 
 
 
