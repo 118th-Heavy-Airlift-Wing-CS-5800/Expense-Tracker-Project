@@ -2,7 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const expenseForm = document.getElementById('expenseForm');
   const expenseList = document.getElementById('expenseList');
   const userForm = document.getElementById('userForm');
-  const userOutput = document.getElementById('userOutput');
+  const userConfirmation = document.getElementById('userConfirmation');
+
 
   const EXPENSE_API = '/api/expenses';
   const USER_API = '/api/users';
@@ -64,18 +65,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const data = await response.json();
       if (response.ok) {
-        userOutput.textContent = `✅ User "${data.user.username}" created successfully.`;
-        userOutput.classList.remove('error');
-        userOutput.classList.add('success');
+        userConfirmation.textContent = `✅ User "${data.user.username}" created successfully.`;
+        userConfirmation.style.color = 'green';
       } else {
-        userOutput.textContent = `❌ ${data.message || 'Failed to create user.'}`;
-        userOutput.classList.remove('success');
-        userOutput.classList.add('error');
+        userConfirmation.textContent = `❌ ${data.message || 'Failed to create user.'}`;
+        userConfirmation.style.color = 'red';
       }
+
 
     } catch (err) {
       console.error('Error creating user:', err);
-      userOutput.textContent = '❌ Error creating user.';
+      userConfirmation.textContent = '❌ Error creating user.';
+      userConfirmation.style.color = 'red';
+
     }
   });
 
