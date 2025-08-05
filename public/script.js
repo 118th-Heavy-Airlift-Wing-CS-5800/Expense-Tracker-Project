@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const username = document.getElementById('usernameInput').value.trim();
     const email = document.getElementById('emailInput').value.trim();
     const password = document.getElementById('passwordInput').value.trim();
+    
 
     try {
       const response = await fetch(USER_API, {
@@ -64,9 +65,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await response.json();
       if (response.ok) {
         userOutput.textContent = `✅ User "${data.user.username}" created successfully.`;
+        userOutput.classList.remove('error');
+        userOutput.classList.add('success');
       } else {
         userOutput.textContent = `❌ ${data.message || 'Failed to create user.'}`;
+        userOutput.classList.remove('success');
+        userOutput.classList.add('error');
       }
+
     } catch (err) {
       console.error('Error creating user:', err);
       userOutput.textContent = '❌ Error creating user.';
