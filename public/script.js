@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     try {
+      document.getElementById('userMessage').textContent = "Creating user... Please wait.";
       const response = await fetch(USER_API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -65,9 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const data = await response.json();
       if (response.ok) {
+        document.getElementById('userMessage').textContent = `✅ User "${username}" created successfully.`;
         userConfirmation.textContent = `✅ User "${data.user.username}" created successfully.`;
         userConfirmation.style.color = 'green';
       } else {
+        document.getElementById('userMessage').textContent = "❌ Failed to create user.";
         userConfirmation.textContent = `❌ ${data.message || 'Failed to create user.'}`;
         userConfirmation.style.color = 'red';
       }
