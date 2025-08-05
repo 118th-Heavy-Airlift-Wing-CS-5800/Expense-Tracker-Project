@@ -82,11 +82,6 @@
 <body>
   <h1>Expense Tracker</h1>
   
-  <form id="expenseForm">
-    <label>Category: <input type="text" id="category" required></label>
-    <label>Amount: <input type="number" id="amount" required></label>
-    <button type="submit">Add Expense</button>
-  </form>
 
   <h2>Set Budget</h2>
     <input type="number" id="budgetAmount" placeholder="Enter your budget">
@@ -102,7 +97,10 @@
 
   <hr>
 
-
+  <h2>Add Expense</h2>
+  <input type="text" id="expenseCategory" placeholder="Category">
+  <input type="number" id="expenseAmount" placeholder="Amount">
+  <button onclick="addExpense()">Add Expense</button>
 
   <h3>Expenses</h3>
   <ul id="expenseList"></ul>
@@ -254,14 +252,12 @@
     <button type="submit">Create User</button>
   </form>
   
-  <h2>Set Budget</h2>
-    <input type="text" id="budgetUsername" placeholder="Username">
-    <input type="text" id="budgetName" placeholder="Budget Name">
-    <input type="number" id="budgetAmount" placeholder="Budget Amount">
-    <button id="setBudgetBtn">Set Budget</button>
 
   <hr>
-
+  <h2>Check Balance</h2>
+    <input type="text" id="balanceUsername" placeholder="Enter Username" />
+    <button id="checkBalanceBtn">Check Balance</button>
+    <p id="balanceOutput"></p>
 
 
 
